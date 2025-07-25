@@ -1,102 +1,54 @@
-import Image from "next/image";
+import React, { useState } from 'react';
+import Head from 'next/head';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({});
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch('/api/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) setSubmitted(true);
+  };
+
+  return (
+    <div>
+      <Head>
+        <title>SAM Registration Processing Assistance</title>
+      </Head>
+      <main className="max-w-3xl mx-auto p-4">
+        <h1 className="text-3xl font-bold text-center mb-6">SAM Registration Processing Assistance</h1>
+        {submitted ? (
+          <p className="text-green-600">Thank you! Your information has been submitted.</p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input name="businessName" placeholder="Business Name" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="dba" placeholder="DBA (if any)" onChange={handleChange} className="w-full p-2 border" />
+            <input name="uei" placeholder="UEI Number (or type 'Need one')" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="ein" placeholder="EIN / Tax ID" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="address" placeholder="Business Address" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="contactName" placeholder="Contact Name" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="contactEmail" type="email" placeholder="Contact Email" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="phone" placeholder="Phone Number" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="naics" placeholder="NAICS Codes" onChange={handleChange} className="w-full p-2 border" />
+            <input name="entityType" placeholder="Entity Type (LLC, Corp, etc.)" onChange={handleChange} required className="w-full p-2 border" />
+            <input name="cageCode" placeholder="CAGE Code (if any)" onChange={handleChange} className="w-full p-2 border" />
+            <textarea name="comments" placeholder="Additional Comments or Special Instructions" onChange={handleChange} className="w-full p-2 border"></textarea>
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+          </form>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="text-center mt-10 text-sm text-gray-500">
+        © {new Date().getFullYear()} SAM Registration Processing Assistance. Not affiliated with the U.S. Government.
       </footer>
     </div>
   );
